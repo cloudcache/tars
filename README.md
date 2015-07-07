@@ -8,9 +8,9 @@ TARS 包发布系统，是一套提供高效的软件包的管理、部署和运
 2. 修改配置文件 `./console/tars.ini` 。配置基本信息、后台服务API地址等。
 3. 调整 `./console/www/assets/js/app.js` 中的一些前台配置项。
 
-[Web 控制台说明](https://github.com/tencent-tars/tars/blob/master/console)
+[Web 控制台说明](https://github.com/tencent-tars/tars/tree/master/console)
 
-[后台服务和接口说明](https://github.com/tencent-tars/tars/blob/master/api)
+[后台服务和接口说明](https://github.com/tencent-tars/tars/tree/master/api)
 
 ## 目录结构
 
