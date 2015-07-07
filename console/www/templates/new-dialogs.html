@@ -1,0 +1,124 @@
+<!-- 本地上传文件 start -->
+<div class="modal" id="modal-upload" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">本地上传文件</h4>
+      </div>
+      <form class="modal-body" name="formUpload" target="iframe-upload-target" action="{{'/api/p/'+pkg.product+'/'+pkg.name+'/files/upload'}}" method="post" enctype="multipart/form-data">
+        <p class="text-danger text-center">
+          <span class="glyphicon glyphicon-warning-sign"></span> 注意：不能上传.svn文件夹，压缩包中也不能包含.svn文件夹。
+        </p>
+        <div class="form-horizontal form-upload">
+          <div class="form-group">
+            <label class="control-label">当前路径</label>
+            <div class="control-input">
+              <p class="form-control-static">
+                <code>./{{uploadOptions.path}}</code>
+                <input type="hidden" name="path" value="{{uploadOptions.path}}">
+              </p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label">文件</label>
+            <div class="control-input">
+              <div class="control-input-file">
+                <input ng-repeat="f in uploadFiles" type="file" name="ScriptFile[]" multiple required>
+              </div>
+              <button type="button" class="btn btn-xs btn-link" ng-click="addAnUploadFile()">添加更多...</button>
+              &nbsp; <span class="text-muted" ng-if="supportMultipleFile">(注：选择文件时，可以一次选中多个文件)</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label">选项</label>
+            <div class="control-input">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="uncom" value="yes" checked> 自动解压tar.gz或.tgz文件,并删除压缩包
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label">修改权限</label>
+            <div class="control-input">
+              <input type="text" class="form-control"
+                name="chmod"
+                value="644"
+                title="3位八进制数字"
+                pattern="^[0-7]{3}$"
+                required>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <iframe id="iframe-upload-target" name="iframe-upload-target"></iframe>
+        <button type="button" class="btn btn-default"
+          data-dismiss="modal"
+          ng-disabled="uploadProcessing">
+          取消
+        </button>
+        <button type="button" class="btn btn-primary"
+          ng-click="uploadConfirm()"
+          ng-disabled="uploadProcessing">
+          {{uploadProcessing ? '上传中...' : '上传'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 本地上传文件 end -->
+
+<!-- 从现网拉取文件 start -->
+<div class="modal" id="modal-pull" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">从现网拉取文件</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-pull">
+          <div class="form-group">
+            <label>当前路径</label>
+            <p class="form-control-static">
+              <code>./{{pullOptions.path}}</code>
+            </p>
+          </div>
+          <div class="form-group">
+            <label>源主机IP</label>
+            <input type="text" class="form-control"
+              ng-model="pullOptions.ip"
+              name="ip"
+              autocomplete="off"
+              required>
+          </div>
+          <div class="form-group">
+            <label>文件列表 (每行一个文件或目录)</label>
+            <textarea class="form-control text-code" rows="6"
+              ng-model="pullOptions.fileList"
+              name="fileList"
+              autocomplete="off"
+              spellcheck="false"
+              required></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default"
+          data-dismiss="modal"
+          ng-disabled="pullProcessing">
+          取消
+        </button>
+        <button type="submit" class="btn btn-primary"
+          ng-click="pullConfirm()"
+          ng-disabled="pullProcessing">
+          {{pullProcessing ? '拉取中...' : '拉取'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 从现网拉取文件 end -->

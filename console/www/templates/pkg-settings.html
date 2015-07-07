@@ -1,0 +1,109 @@
+<div class="pkg-content">
+  <div class="pkg-settings">
+    <div class="section-title">隐私设置</div>
+
+    <div class="form-group-radio">
+      <div>
+        <label class="radio-inline">
+          <input type="radio"
+            ng-model="pkg.visibility"
+            ng-disabled="readonly"
+            value="public"> 公开
+        </label>
+        <label class="radio-inline">
+          <input type="radio"
+            ng-model="pkg.visibility"
+            ng-disabled="readonly"
+            value="private"> 私有
+        </label>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="section-title">人员权限列表</div>
+
+    <table class="table table-hover table-settings" id="table-settings">
+      <colgroup>
+        <col style="width:25%">
+        <col style="width:22%">
+        <col style="width:22%">
+        <col style="width:22%">
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>用户名</th>
+          <th>管理员 <i class="glyphicon glyphicon-info-sign" title="1. 包的管理员可以设置包的公开/私有属性&#10;2. 包的管理员可以设置包的各项人员列表（除超级运维外）&#10;3. 包的管理员可以为这个包创建新版本"></i></th>
+          <th>超级运维 <i class="glyphicon glyphicon-info-sign" title="包的超级运维可以将这个包部署到任意机器（通常是一些公共包）"></i></th>
+          <th>运维 <i class="glyphicon glyphicon-info-sign" title="如果这个包是私有包，则只有包的运维（包括超级运维）才能部署这个包"></i></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in userList">
+          <td ng-class="{'td-input': row.unsynced}">
+            <span ng-if="!row.unsynced">{{row.name}}</span>
+            <input type="text" class="form-control"
+              ng-if="row.unsynced"
+              ng-model="row.name"
+              ng-readonly="storing">
+          </td>
+          <td class="td-checkbox">
+            <i class="icon-yes" ng-if="readonly&&row.isAdmin"></i>
+            <input type="checkbox"
+              ng-if="!readonly"
+              ng-model="row.isAdmin">
+          </td>
+          <td class="td-checkbox">
+            <i class="icon-yes" ng-if="readonly&&row.isSuperOperator"></i>
+            <input type="checkbox"
+              ng-if="!readonly"
+              ng-disabled="!isAdmin"
+              ng-model="row.isSuperOperator">
+          </td>
+          <td class="td-checkbox">
+            <i class="icon-yes" ng-if="readonly&&pkg.visibility=='private'&&row.isOperator"></i>
+            <input type="checkbox"
+              ng-if="!readonly"
+              ng-disabled="pkg.visibility=='public'"
+              ng-model="row.isOperator">
+          </td>
+          <td>
+            <a href="#"
+              ng-if="!readonly"
+              ng-click="remove(row, $index)">
+              删除
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="btnbar" ng-if="!readonly">
+      <button type="button" class="btn btn-default"
+        ng-click="addOne()">
+        新增人员
+      </button>
+    </div>
+
+    <div class="editbar">
+      <button type="button" class="btn btn-lg btn-primary"
+        ng-click="edit()"
+        ng-if="readonly"
+        ng-disabled="!pkg.authorized">
+        编 辑
+      </button>
+      <button type="button" class="btn btn-lg btn-default"
+        ng-click="cancel()"
+        ng-if="!readonly">
+        取消
+      </button>
+      <button type="button" class="btn btn-lg btn-primary"
+        ng-click="save()"
+        ng-if="!readonly">
+        保存
+      </button>
+    </div>
+  </div>
+</div>

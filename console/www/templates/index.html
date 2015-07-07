@@ -1,0 +1,23 @@
+<div class="container index-container">
+  <h1>包发布系统</h1>
+  <h2>用心打造 <span class="middot">&middot;</span> 最可信赖</h2>
+  <form class="index-search form-inline" ng-submit="search()">
+    <select class="form-control index-select"
+      name="p"
+      ng-model="params.p"
+      ng-options="row.product as row.chinese for row in productList">
+      <option value="">全部业务</option>
+    </select>
+    <input type="text" class="form-control"
+      name="q"
+      placeholder="输入包名称"
+      ng-model="params.q"
+      ng-required="!params.p">
+    <button type="submit" class="btn btn-primary">
+      <i class="icon-search-lg"></i>
+    </button>
+  </form>
+  <div class="empty-product" ng-if="!productList.length && isAdmin">
+    现在还没有任何业务，<a ui-sref="product-manage">点击这里添加业务</a>
+  </div>
+</div>

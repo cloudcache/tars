@@ -1,0 +1,76 @@
+<div class="pkg-content">
+  <div class="btnbar">
+    <a class="btn btn-primary" ui-sref="pkg.new(pkg)">创建新版本</a>
+    <div class="content-search with-search-icon">
+      <input type="search" class="form-control pull-left" placeholder="查找版本号"
+        ng-model="filters.version"
+        ng-change="versionChange()">
+    </div>
+  </div>
+
+  <ul class="nav nav-toolbar">
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        {{filters.author || '创建者'}}
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu filter-author">
+        <li ng-repeat="authorName in authorList">
+          <a href="#" ng-click="setAuthor(authorName)">{{authorName}}</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="#" ng-click="setAuthor()">所有人</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        创建时间从{{filters.order==='desc' ? '近到远' : '远到近'}}
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu fixwidth" role="menu">
+        <li><a href="#" ng-click="setOrder('desc')">创建时间从近到远</a></li>
+        <li><a href="#" ng-click="setOrder('asc')">创建时间从远到近</a></li>
+      </ul>
+    </li>
+    <li>
+      <label class="checkbox">
+        <input type="checkbox" ng-model="filters.ignoreEmpty" ng-change="ignoreEmptyChange()">
+        只显示有实例版本
+      </label>
+    </li>
+  </ul>
+
+  <ul class="version-list">
+    <li ng-repeat="row in versionList">
+      <div class="version-row">
+        <div class="version-content">
+          <div class="version-btns">
+            <button type="button" class="btn btn-xs btn-default" ng-click="install(row)">安装</button>
+            <a href="#" class="pkg-icon-download" title="下载tar包" ng-click="downloadTar(row)"></a>
+            <a href="#" class="pkg-icon-remove" title="删除" ng-click="removeVersion(row)"></a>
+          </div>
+          <a class="version-num" ui-sref="version-detail(row)">v{{row.version}}</a>
+          <span class="version-author">
+            {{row.author}} 于 {{row.submitTime}} 创建
+          </span>
+          <p class="version-remark">{{row.remark}}</p>
+        </div>
+        <div class="version-instance">
+          <a class="version-instance-count" ui-sref="pkg.instances(row)" title="实例列表">
+            <i class="pkg-icon-instance-lg"></i>
+            <span ng-class="{'text-gray':!row.instanceCount}">{{row.instanceCount || 0}}</span>
+          </a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="pn-container">
+  <tars-pagination ng-model="filters.page" total-items="totalItems" items-per-page="itemsPerPage" num-pages="numPages"></tars-pagination>
+  <div class="pn-helper">
+    共 {{totalItems}} 个版本， {{filters.page}} / {{numPages}} 页
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="container narrow">
+  <h1 class="page-title">
+    我的账户
+  </h1>
+
+  <div class="pkg-content">
+    <form class="form-account" ng-submit="updatePassword()">
+      <div class="form-group">
+        <label class="label-control">
+          用户类型
+        </label>
+        <p class="form-control-static">{{role}}</p>
+      </div>
+      <div class="form-group">
+        <label class="label-control">
+          旧密码
+        </label>
+        <input type="password" class="form-control"
+          name="old_password"
+          ng-model="formData.old_password"
+          required>
+      </div>
+      <div class="form-group">
+        <label class="label-control">
+          新密码
+        </label>
+        <input type="password" class="form-control"
+          name="password"
+          ng-model="formData.password"
+          title="5-16位字符"
+          pattern="^.{5,16}$"
+          required>
+        <div class="help-block">
+          密码由5-16位字符组成
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="label-control">
+          重复新密码
+        </label>
+        <input type="password" class="form-control"
+          name="password2"
+          ng-model="formData.password2"
+          title="5-16位字符"
+          pattern="^.{5,16}$"
+          required>
+      </div>
+      <button type="submit" class="btn btn-primary"
+        ng-disabled="updatingPassword">
+        修改密码
+      </button>
+    </form>
+  </div>
+</div>

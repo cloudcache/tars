@@ -1,0 +1,657 @@
+<div class="container narrow" ng-if="!inited">
+  <h1 class="page-title">
+    {{newPackage ? '创建新包' : '创建新版本'}}
+  </h1>
+  <div class="pkg-content">
+    <form class="form-horizontal form-create" name="formInfo" method="post" ng-submit="startCreate()">
+      <div class="form-group">
+        <label class="control-label">
+          基本信息
+        </label>
+        <div class="control-input">
+          <select class="form-control"
+            name="product"
+            ng-model="pkg.product"
+            ng-options="row.product as row.chinese for row in productList"
+            ng-disabled="confirmed"
+            required>
+            <option value="">选择业务</option>
+          </select>
+          <span class="input-divider">/</span>
+          <input type="text" class="form-control"
+            name="name"
+            ng-model="pkg.name"
+            placeholder="输入包名"
+            ng-readonly="confirmed"
+            required>
+          <span class="input-divider">/</span>
+          <input type="text" class="form-control"
+            name="version"
+            ng-model="pkg.version"
+            placeholder="输入版本号"
+            title="点号分隔的数字"
+            tooltip
+            data-trigger="focus"
+            pattern="\d+(\.\d+)+"
+            required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          包类型和框架
+        </label>
+        <div class="control-input">
+          <select class="form-control"
+            name="frameworkType"
+            ng-model="pkg.frameworkType"
+            ng-options="row.value as row.text for row in frameworkTypeList"
+            ng-change="frameworkTypeChanged()"
+            required>
+            <option value=""></option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          程序包用户
+        </label>
+        <div class="control-input">
+          <!-- <select class="form-control"
+            name="user"
+            ng-model="pkg.user"
+            ng-options="row for row in userList"
+            required>
+          </select> -->
+          <input class="form-control"
+            name="user"
+            ng-model="pkg.user"
+            required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          作者
+        </label>
+        <div class="control-input">
+          <input type="text" class="form-control"
+            name="author"
+            ng-model="pkg.author"
+            readonly
+            required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          版本说明
+        </label>
+        <div class="control-input">
+          <textarea class="form-control"
+            name="remark"
+            ng-model="pkg.remark"
+            required>
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-lg btn-primary"
+          ng-disabled="startingCreate">
+          开始创建
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="container" ng-if="inited" ng-class="{'new-with-sidebar':readonly,narrow:!readonly}">
+  <div class="right-btnbar pull-right" ng-if="readonly">
+    <button type="button" class="btn btn-primary"
+      ng-click="install()">
+      安装到机器
+    </button>
+    <button type="button" class="btn btn-default"
+      ng-click="removeVersion()">
+      删除
+    </button>
+  </div>
+  <h1 class="pkg-info pkg-info-loose">
+    <i class="pkg-info-icon"></i>
+    <span class="pkg-info-text">
+      <span class="product">
+        <a ui-sref="product(pkg)">{{pkg.product}}</a>
+      </span>
+      <span class="path-divider">/</span>
+      <span class="name">
+        <a ui-sref="pkg.versions(pkg)">{{pkg.name}}</a>
+      </span>
+      <span class="path-divider">/</span>
+      <span class="version">
+        <a href="#">v{{pkg.version}}</a>
+      </span>
+    </span>
+  </h1>
+  <div class="pkg-sidebar" ng-if="readonly">
+    <ul class="sunken-menu-group">
+      <li>
+        <a class="sunken-menu-item active" ui-sref="version-detail(pkg)">
+          <div class="arrow"></div>
+          <i class="pkg-icon-versions"></i>
+          <span>查看程序包</span>
+        </a>
+      </li>
+      <li>
+        <a class="sunken-menu-item" ui-sref="pkg.instances(pkg)">
+          <div class="arrow"></div>
+          <i class="pkg-icon-instances"></i>
+          <span>实例</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div ng-class="{'pkg-container':readonly}">
+    <ul class="nav nav-tabs">
+      <li ng-repeat="tab in tabList"
+          ng-class="{active:isActiveTab(tab.value)}">
+        <a href="#" ng-click="setActiveTab(tab)">{{tab.text}}</a>
+      </li>
+    </ul>
+    <div class="content-with-nav">
+
+      <!-- 基本信息 start -->
+      <div class="form-horizontal form-readonly" ng-if="isActiveTab('basic')">
+        <div class="form-group">
+          <label class="control-label">
+            所属业务
+          </label>
+          <div class="control-readonly">
+            {{getProduct(pkg.product)}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            包类型和框架
+          </label>
+          <div class="control-readonly">
+            {{getFrameworkType(pkg.frameworkType)}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            作者
+          </label>
+          <div class="control-readonly">
+            {{pkg.author}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            程序包用户
+          </label>
+          <div class="control-readonly">
+            {{pkg.user}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            版本说明
+          </label>
+          <div class="control-readonly" ng-if="!toEditRemark">
+            {{pkg.remark}}
+          </div>
+          <div class="control-input" ng-if="toEditRemark">
+            <textarea class="form-control"
+              id="textarea-edit-remark"
+              name="remark"
+              ng-model="pkg.remark"
+              required>
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group" ng-if="readonly">
+          <label class="control-label">&nbsp;</label>
+          <div class="control-input">
+            <button type="button" class="btn btn-default"
+              ng-if="!toEditRemark"
+              ng-click="editRemark()">
+              编辑
+            </button>
+            <button type="button" class="btn btn-default"
+              ng-if="toEditRemark"
+              ng-disabled="editingRemark"
+              ng-click="cancelEditRemark()">
+              取消
+            </button>
+            <button type="button" class="btn btn-primary"
+              ng-if="toEditRemark"
+              ng-disabled="editingRemark"
+              ng-click="saveRemark()">
+              保存
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- 基本信息 end -->
+
+      <!-- 文件管理 start -->
+      <div ng-if="isActiveTab('files')">
+        <div class="content-btnbar" ng-if="!readonly">
+          <button type="button" class="btn btn-primary" ng-click="upload()">本地上传</button>
+          <button type="button" class="btn btn-default" ng-click="pull()">现网拉取</button>
+          <button type="button" class="btn btn-default" ng-click="mkdir()">创建目录</button>
+          <button type="button" class="btn btn-default" ng-click="ls()" ng-disabled="lsing">刷新</button>
+        </div>
+        <div class="content-btnbar" ng-if="readonly">
+          <button type="button" class="btn btn-default" ng-click="downloadTar()">下载完整tar包</button>
+        </div>
+        <div class="content-pwd">
+          <!-- <span>当前目录: <b class="text-code">./{{pwd()}}</b></span> -->
+          <span>当前目录:
+            <b class="text-code">
+              <a href="#"
+                ng-click="cd(0)">{{pkg.name}}</a>/<a href="#"
+                  ng-repeat-start="row in listPwd()"
+                  ng-click="cd($index+1)">{{row}}</a><span
+                    ng-repeat-end>/</span>{{lastPwd()}}
+            </b>
+          </span>
+        </div>
+        <table class="table table-hover table-files">
+          <colgroup>
+            <col>
+            <col style="width:12%">
+            <col style="width:24%">
+            <col style="width:12%">
+            <col style="width:20%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>大小</th>
+              <th>最后修改</th>
+              <th>权限</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="filesFirstLoading">
+              <td colspan="5" class="text-center"><i class="icon-spinner"></i></td>
+            </tr>
+            <tr ng-repeat="file in fileList">
+              <td class="text-code">
+                <i class="file-icon" ng-class="getFileClass(file)" ng-if="!file.lsing"></i>
+                <i class="icon-spinner icon-spinner-sm" ng-if="file.lsing"></i>
+                <a href="#" ng-if="fileCanClick(file)" ng-click="clickFile(file)">{{file.name}}</a>
+                <span ng-if="!fileCanClick(file)">{{file.name}}</span>
+              </td>
+              <td>{{file.size}}</td>
+              <td>{{file.mtime}}</td>
+              <td>{{file.mode}}</td>
+              <td class="file-actions">
+                <a href="#" title="删除" ng-if="fileCanRemove(file)" ng-click="rm(file)"><i class="file-icon file-icon-remove"></i></a>
+                <a href="#" title="重命名" ng-if="fileCanRename(file)" ng-click="rename(file)"><i class="file-icon file-icon-rename"></i></a>
+                <a href="#" title="修改权限" ng-if="fileCanChmod(file)" ng-click="chmod(file)"><i class="file-icon file-icon-chmod"></i></a>
+                <a href="#" title="下载文件" ng-if="fileCanDownload(file)" ng-click="download(file)"><i class="file-icon file-icon-download"></i></a>
+                <i class="icon-spinner icon-spinner-sm" ng-if="file.processing"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div ng-if="newVersion">
+          <h3 class="title-svn-status">本次文件变更列表</h3>
+          <div class="content-btnbar">
+            <button type="button" class="btn btn-primary"
+              ng-click="svnRevertAll()"
+              ng-disabled="svnProcessing || !changeList || !changeList.length">
+              还原所有变更
+            </button>
+            <button type="button" class="btn btn-default"
+              ng-click="svnStatus()"
+              ng-disabled="svnProcessing">
+              刷新
+            </button>
+          </div>
+          <table class="table table-hover table-svn-status">
+            <colgroup>
+              <col style="width:50%">
+              <col style="width:25%" span="2">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>文件路径</th>
+                <th>变更</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="row in changeList">
+                <td>{{row.file}}</td>
+                <td>{{row.action | svnAction}}</td>
+                <td>
+                  <button type="button" class="btn btn-xs btn-default"
+                    ng-click="svnRevert(row)"
+                    ng-disabled="svnProcessing || row.processing">
+                    还原
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- 文件管理 end -->
+
+      <!-- 进程 start -->
+      <form class="form-horizontal form-process" name="formProcess" ng-if="isActiveTab('process')">
+        <div class="form-group">
+          <label class="control-label">
+            <small>*</small> 监控进程列表
+          </label>
+          <div class="control-input">
+            <input type="text" class="form-control"
+              name="app_name"
+              ng-model="config.app_name"
+              pattern="[\w\d\:\,\.\- ]+"
+              ng-readonly="readonly"
+              popover
+              data-html="true"
+              data-trigger="focus"
+              data-content="1. 多个进程使用空格分隔<br>2. 可指定进程数量(非特殊需求,不建议配置)<wbr> 例如: <code>test_app1:1,20</code>"
+              required>
+          </div>
+        </div>
+        <div class="form-group" ng-if="pkg.frameworkType==='server'">
+          <label class="control-label">
+            TCP端口
+          </label>
+          <div class="control-input">
+            <input type="text" class="form-control"
+              name="port"
+              ng-model="config.port"
+              title="多个端口使用空格分隔"
+              pattern="\d+( \d+)*"
+              ng-readonly="readonly">
+          </div>
+        </div>
+        <div class="form-group" ng-if="pkg.frameworkType==='server'">
+          <label class="control-label">
+            TCP端口绑定网络
+          </label>
+          <div class="control-input">
+            <select class="form-control"
+              name="ip_type"
+              ng-model="config.ip_type"
+              ng-options="row.value as row.text for row in ipTypeList"
+              ng-disabled="readonly">
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-if="pkg.frameworkType==='server'">
+          <label class="control-label">
+            UDP端口
+          </label>
+          <div class="control-input">
+            <input type="text" class="form-control"
+              name="udp_port"
+              ng-model="config.udp_port"
+              title="多个端口使用空格分隔"
+              pattern="\d+( \d+)*"
+              ng-readonly="readonly">
+          </div>
+        </div>
+        <div class="form-group" ng-if="pkg.frameworkType==='server'">
+          <label class="control-label">
+            <small>*</small> KILL进程信号
+          </label>
+          <div class="control-input">
+            <select class="form-control"
+              name="kill_sig"
+              ng-model="config.kill_sig"
+              ng-options="row for row in killSigList"
+              ng-disabled="readonly"
+              required>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-if="pkg.frameworkType==='server'">
+          <label class="control-label">
+            <small>*</small> 启动方式
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="start"
+              ng-model="config.start"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group" ng-if="pkg.frameworkType==='server'">
+          <label class="control-label">
+            <small>*</small> 停止方式
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="stop"
+              ng-model="config.stop"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+      </form>
+      <!-- 进程 end -->
+
+      <!-- 调度&监控 start -->
+      <form class="form-block" name="formDispatch" ng-if="isActiveTab('dispatch')">
+        <div class="form-group">
+          <label class="control-label">
+            crontab调度 <small>*</small>
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="crontab"
+              ng-model="config.crontab"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            文件清理 <small>*</small>
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="clear_file"
+              ng-model="config.clear_file"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            占位符替换 <small>*</small>
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="substitute"
+              ng-model="config.substitute"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            md5校验 <small>*</small>
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="md5"
+              ng-model="config.md5"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            进程监控命令 <small>*</small>
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="monitor"
+              ng-model="config.monitor"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            监控异常处理命令 <small>*</small>
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="resolve"
+              ng-model="config.resolve"
+              ng-readonly="readonly"
+              required>
+            </textarea>
+          </div>
+        </div>
+      </form>
+      <!-- 调度&监控 end -->
+
+      <!-- 安装/启动相关 start -->
+      <form class="form-block" name="formInstall" ng-if="isActiveTab('install')">
+        <div class="form-group">
+          <label class="control-label">
+            创建文件链接
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="link"
+              ng-model="config.link"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            本地编译命令
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="make"
+              ng-model="config.make"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            安装开始时执行
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="install_on_start"
+              ng-model="config.install_on_start"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            安装完成后执行
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="install_on_complete"
+              ng-model="config.install_on_complete"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            安装结果检查命令
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="check_installation"
+              ng-model="config.check_installation"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            程序启动前执行
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="start_init"
+              ng-model="config.start_init"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            程序启动后执行
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="start_on_started"
+              ng-model="config.start_on_started"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">
+            进程停止后执行
+          </label>
+          <div class="control-input">
+            <textarea class="form-control"
+              name="stop_on_stoped"
+              ng-model="config.stop_on_stoped"
+              ng-readonly="readonly">
+            </textarea>
+          </div>
+        </div>
+      </form>
+      <!-- 安装/启动相关 end -->
+
+      <!-- init.xml start -->
+      <form class="form-init-xml" ng-if="isActiveTab('init')">
+        <textarea class="form-control"
+          name="xml"
+          rows="25"
+          ng-model="xml.content"
+          readonly></textarea>
+      </form>
+      <!-- init.xml end -->
+
+      <div class="content-submitbar" ng-if="!readonly">
+        <div class="left">
+          <button type="button" class="btn btn-lg btn-default"
+            ng-click="save()"
+            ng-disabled="saving">保存</button>
+          <button type="button" class="btn btn-lg btn-default"
+            ng-click="submit()"
+            ng-disabled="submitting">提交版本</button>
+        </div>
+        <div class="right" ng-if="hasNextStep()">
+          <button type="button" class="btn btn-lg btn-primary" ng-click="nextStep()">下一步</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div ui-view="dialogs"></div>
+<div ui-view="editor-dialogs"></div>

@@ -1,0 +1,71 @@
+<!-- 编辑文件 start -->
+<div class="modal" id="modal-editor" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{editorOptions.readonly ? '查看' : '编辑'}}文件</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group text-small">
+          <div class="pull-right">
+            文件编码：
+            <div class="btn-group" id="btn-select-charset">
+              <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="text text-code">{{getCurrentCharset()}}</span> <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right dropdown-charset">
+                <li ng-repeat="row in charsetList"
+                  ng-class="{active: isCurrentCharset(row.value)}">
+                  <a href="#" class="text-code"
+                    ng-click="setCharset(row.value)">
+                    {{row.text}}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="pull-right">
+            类型：
+            <div class="btn-group" id="btn-select-language">
+              <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="text text-code">{{getCurrentLanguage()}}</span> <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right dropdown-language">
+                <li ng-repeat="row in languageList"
+                  ng-class="{active: isCurrentLanguage(row.value)}">
+                  <a href="#" class="text-code"
+                    ng-click="setLanguage(row.value)">
+                    {{row.text}}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p>
+            <code>./{{editorOptions.path}}</code>
+            &nbsp;
+            <i class="icon-spinner icon-spinner-sm" ng-if="editorLoading"></i>
+          </p>
+        </div>
+        <div class="form-group">
+          <div ui-codemirror="{onLoad: editorLoaded}" ui-codemirror-opts="editorOpts" ng-model="editorOptions.content"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default"
+          data-dismiss="modal"
+          ng-disabled="editorProcessing">
+          {{editorOptions.readonly ? '关闭' : '取消'}}
+        </button>
+        <button type="submit" class="btn btn-primary"
+          ng-if="!editorOptions.readonly"
+          ng-click="editorConfirm()"
+          ng-disabled="editorProcessing || editorLoading || editorError">
+          {{editorProcessing ? '保存中...' : '保存'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 编辑文件 end -->

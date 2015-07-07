@@ -1,0 +1,14 @@
+<ul class="tars-pagination">
+  <li ng-class="{disabled: noPrevious()}">
+    <a href ng-click="selectPage(1)" class="pn-first"></a>
+  </li>
+  <li ng-class="{disabled: noPrevious()}">
+    <a href ng-click="selectPage(page-1)" class="pn-previous"></a>
+  </li>
+  <li ng-class="{disabled: noNext()}">
+    <a href ng-click="selectPage(page+1)" class="pn-next"></a>
+  </li>
+  <li ng-class="{disabled: noNext()}">
+    <a href ng-click="selectPage(totalPages)" class="pn-last"></a>
+  </li>
+</ul>

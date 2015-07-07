@@ -1,0 +1,18 @@
+{
+  "browser": true,
+  "curly": true,
+  "devel": true,
+  "latedef": "nofunc",
+  "multistr": true,
+  "noarg": true,
+  "quotmark": "single",
+  "trailing": true,
+  "undef": true,
+  "unused": true,
+  "predef": [
+    "angular",
+    "$",
+    "_",
+    "CodeMirror"
+  ]
+}

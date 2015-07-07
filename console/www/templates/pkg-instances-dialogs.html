@@ -1,0 +1,227 @@
+<!-- 升级 start -->
+<div class="modal" id="modal-update" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">升级包 {{product}}/{{name}}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal form-update">
+          <div class="form-group">
+            <div class="control-label">当前版本</div>
+            <div class="control-input">
+              <p class="form-control-static">v{{updateOptions.fromVersion}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="control-label">升级至</div>
+            <div class="control-input">
+              <select class="form-control"
+                ng-model="updateOptions.toVersion"
+                ng-options="row.value as row.label for row in updateVersions"
+                required></select>
+              <div class="help-block">{{getUpdateRemark()}}</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="control-label">安装路径</div>
+            <div class="control-input">
+              <p class="form-control-static">{{updateOptions.installPath}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="control-label">设备IP</div>
+            <div class="control-input">
+              <textarea class="form-control"
+                ng-model="updateOptions.ipList"
+                ng-list="&#10;"
+                readonly></textarea>
+              <div class="help-block">共 {{updateOptions.ipList.length}} 台设备</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="control-label">分批升级</div>
+            <div class="control-input">
+              <label class="checkbox-inline">
+                <input type="checkbox" ng-model="batchEnabled"> 启用分批升级
+              </label>
+              <div class="form-group-batch" ng-if="batchEnabled">
+                每批升级
+                <input type="number" class="form-control"
+                  ng-model="updateOptions.batchNum"
+                  min="1"
+                  required> 台，每批间隔
+                <input type="number" class="form-control"
+                  ng-model="updateOptions.batchInterval"
+                  min="0"
+                  required> 秒
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="control-label">其它设置</div>
+            <div class="control-input">
+              <label class="checkbox-inline">
+                <input type="checkbox"
+                  ng-model="updateOptions.forceUpdate"
+                  ng-true-value="1"
+                  ng-false-value="0"> 强制升级
+              </label>
+              <!-- <label class="checkbox-inline">
+                <input type="checkbox"
+                  ng-model="updateOptions.updateAppName"
+                  ng-true-value="1"
+                  ng-false-value="0"> 更新AppName
+              </label> -->
+              <label class="checkbox-inline">
+                <input type="checkbox"
+                  ng-model="updateOptions.stopBeforeUpdate"
+                  ng-true-value="1"
+                  ng-false-value="0"> 升级前停止
+              </label>
+              <!-- <label class="checkbox-inline">
+                <input type="checkbox"
+                  ng-model="updateOptions.updatePort"
+                  ng-true-value="0"
+                  ng-false-value="1"> 不更新端口配置
+              </label> -->
+              <label class="checkbox-inline">
+                <input type="checkbox"
+                  ng-model="updateOptions.restartAfterUpdate"
+                  ng-true-value="1"
+                  ng-false-value="0"> 升级后重启
+              </label>
+              <!-- <label class="checkbox-inline">
+                <input type="checkbox"
+                  ng-model="updateOptions.updateStartStopScript"
+                  ng-true-value="0"
+                  ng-false-value="1"> 保持启停脚本和AppName一致
+              </label> -->
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+          ng-disabled="updateProcessing">
+          取消
+        </button>
+        <button type="button" class="btn btn-primary"
+          ng-click="updateConfirm()"
+          ng-disabled="updateProcessing||!updateOptions.toVersion">
+          {{updateProcessing ? '升级中...' : '升级'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 升级 end -->
+
+<!-- 启动/停止/重启/卸载 start -->
+<div class="modal" id="modal-maintenance" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">提示</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          确定要{{maintenanceOperation | operationType}}这 {{maintenanceOptions.ipList.length}} 台设备的 {{name}} 吗？
+        </div>
+        <form class="form-horizontal form-maintenance">
+          <div class="form-group">
+            <label class="checkbox-inline">
+              <input type="checkbox" ng-model="batchEnabled">
+              启用分批{{maintenanceOperation | operationType}}
+            </label>
+            <div class="form-group-batch" ng-if="batchEnabled">
+              每批{{maintenanceOperation | operationType}}
+              <input type="number" class="form-control"
+                ng-model="maintenanceOptions.batchNum"
+                min="1"
+                required> 台，每批间隔
+              <input type="number" class="form-control"
+                ng-model="maintenanceOptions.batchInterval"
+                min="0"
+                required> 秒
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+          ng-disabled="maintenanceProcessing">
+          取消
+        </button>
+        <button type="button" class="btn btn-primary"
+          ng-click="maintenanceConfirm()"
+          ng-disabled="maintenanceProcessing">
+          {{maintenanceProcessing ? '' : '确定'}}{{maintenanceOperation | operationType}}{{maintenanceProcessing ? '中...' : ''}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 启动/停止/重启/卸载 end -->
+
+<!-- 回滚 start -->
+<div class="modal" id="modal-rollback" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">提示</h4>
+      </div>
+      <div class="modal-body">
+        <p>确定要回滚这 {{rollbackOptions.ipList.length}} 台设备的 {{name}} 吗？</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+          ng-disabled="rollbackProcessing">
+          取消
+        </button>
+        <button type="button" class="btn btn-primary"
+          ng-click="rollbackConfirm()"
+          ng-disabled="rollbackProcessing">
+          {{rollbackProcessing ? '回滚中...' : '确定回滚'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 回滚 end -->
+
+<!-- 过滤 IP start -->
+<div class="modal" id="modal-filter-ips" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">过滤 IP</h4>
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control"
+          name="ips"
+          ng-model="filters.ips"
+          spellcheck="false"
+          required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          取消
+        </button>
+        <button type="button" class="btn btn-default"
+          ng-click="clearFilters()">
+          清空
+        </button>
+        <button type="button" class="btn btn-primary"
+          ng-click="setFilters()">
+          过滤
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 过滤 IP end -->

@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="right-btnbar pull-right" ng-if="pkg.version">
+    <button type="button" class="btn btn-primary"
+      ng-click="install(pkg)">
+      安装到机器
+    </button>
+    <button type="button" class="btn btn-default"
+      ng-click="removeVersion()">
+      删除
+    </button>
+  </div>
+
+  <h1 class="pkg-info">
+    <i class="pkg-info-icon"></i>
+    <span class="pkg-info-text">
+      <span class="product">
+        <a ui-sref="product(pkg)">{{product}}</a>
+      </span>
+      <span class="path-divider">/</span>
+      <span class="name">
+        <a ui-sref="pkg.versions(pkg)">{{name}}</a>
+      </span>
+      <span class="path-divider" ng-if="pkg.version">/</span>
+      <span class="version" ng-if="pkg.version">
+        <a href="#">v{{pkg.version}}</a>
+      </span>
+    </span>
+  </h1>
+
+  <div class="pkg-with-sidebar clearfix">
+    <div class="pkg-sidebar">
+      <ul class="sunken-menu-group">
+        <li>
+          <a class="sunken-menu-item" ui-sref-active="active" ui-sref="pkg.versions(pkg)" ng-if="!pkg.version">
+            <div class="arrow"></div>
+            <i class="pkg-icon-versions"></i>
+            <span>版本</span>
+          </a>
+        </li>
+        <li>
+          <a class="sunken-menu-item" ui-sref-active="active" ui-sref="version-detail(pkg)" ng-if="pkg.version">
+            <div class="arrow"></div>
+            <i class="pkg-icon-versions"></i>
+            <span>查看程序包</span>
+          </a>
+        </li>
+        <li>
+          <a class="sunken-menu-item" ui-sref-active="active" ui-sref="pkg.instances(pkg)">
+            <div class="arrow"></div>
+            <i class="pkg-icon-instances"></i>
+            <span>实例</span>
+          </a>
+        </li>
+        <!-- <li>
+          <a class="sunken-menu-item" ui-sref-active="active" ui-sref="pkg.settings(pkg)" ng-if="!pkg.version">
+            <div class="arrow"></div>
+            <i class="pkg-icon-permissions"></i>
+            <span>权限</span>
+          </a>
+        </li> -->
+        <li>
+          <a class="sunken-menu-item" ui-sref-active="active" ui-sref="pkg.tasks(pkg)" ng-if="!pkg.version">
+            <div class="arrow"></div>
+            <i class="pkg-icon-tasks"></i>
+            <span>任务</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="pkg-container">
+      <div ui-view></div>
+    </div>
+  </div>
+</div>
+
+<div ui-view="dialogs"></div>
+<div ui-view="dialogs2"></div>

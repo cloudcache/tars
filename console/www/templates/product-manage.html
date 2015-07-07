@@ -1,0 +1,66 @@
+<div class="container narrow">
+  <h1 class="page-title">
+    业务管理
+  </h1>
+
+  <div class="pkg-content">
+    <form class="form-products" ng-submit="storeProducts()">
+      <div class="form-group">
+        <label class="label-control">
+          业务英文ID和中文名称 <small class="text-muted">(每行一组 <code>英文ID:中文名称</code> )</small>
+        </label>
+        <textarea class="form-control"
+          name="products"
+          ng-model="formData.products"
+          spellcheck="false"
+          required></textarea>
+        <div class="help-block">
+          ID： 由字母、数字、下划线组成
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary"
+        ng-disabled="storing">
+        {{storing ? '保存中...' : '批量添加业务'}}
+      </button>
+    </form>
+
+    <h3 class="title-products">业务列表</h3>
+    <table class="table table-hover table-instances">
+      <colgroup>
+        <col style="width:52px">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>
+            <input type="checkbox" ng-model="all.checked" ng-change="allChecked()">
+          </th>
+          <th>业务ID</th>
+          <th>名称</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in productList">
+          <td>
+            <input type="checkbox" ng-model="row.checked" ng-change="rowChecked()">
+          </td>
+          <td>{{row.product}}</td>
+          <td>
+            <a ui-sref="product(row)">{{row.chinese}}</a>
+          </td>
+          <td>
+            <a href="#" ng-click="removeProduct(row)" ng-if="!row.removing">删除</a>
+            <i class="icon-spinner icon-spinner-sm" ng-if="row.removing"></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="content-btnbar">
+      <button type="button" class="btn btn-default"
+        ng-click="removeCheckedProducts()"
+        ng-disabled="removing || !checkedAtLeastOne">
+        {{removing ? '删除中...' : '删除选中业务'}}
+      </button>
+    </div>
+  </div>
+</div>

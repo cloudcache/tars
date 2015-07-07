@@ -1,0 +1,108 @@
+<div class="container narrow">
+  <h1 class="page-title">
+    任务详情
+    <!-- <small>{{taskId}}</small> -->
+  </h1>
+
+  <div class="pkg-content">
+    <div class="form-horizontal form-task-detail">
+      <div class="form-group">
+        <label class="control-label">
+          包
+        </label>
+        <div class="control-readonly">
+          <a ui-sref="pkg.versions(taskDetail)">{{taskDetail.product}} / {{taskDetail.name}}</a>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          操作
+        </label>
+        <div class="control-readonly">
+          {{taskDetail.op_type | operationType}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          结果
+        </label>
+        <div class="control-readonly">
+          <i class="icon-status" ng-class="taskDetail.task_status"></i>
+          {{taskDetail | taskStatus}} （{{taskDetail | taskProgress}}台）
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          耗时
+        </label>
+        <div class="control-readonly">
+          {{taskDetail.used_time | costTime}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label">
+          参数
+        </label>
+        <div class="control-readonly">
+          <a href="#" ng-click="toggleParam()" ng-if="!paramShown">点击查看</a>
+          <pre ng-if="paramShown">{{taskDetail.param | json}}</pre>
+          <a href="#" ng-click="toggleParam()" ng-if="paramShown">点击收起</a>
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-hover table-task-detail">
+      <colgroup>
+        <col style="width:20%">
+        <col>
+        <col style="width:20%">
+        <col style="width:20%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>IP</th>
+          <th>信息</th>
+          <th>状态</th>
+          <th>其它</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in taskResult">
+          <td>{{row.ip}}</td>
+          <td>{{row.lastErrmsg}}</td>
+          <td>
+            <i class="icon-status" ng-class="row.status"></i>
+            {{row | taskDetailStatus}}
+          </td>
+          <td><a href="/task/{{taskId}}/log/{{row.ip}}" target="_blank">日志</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="btnbar">
+      <button type="button" class="btn btn-default pull-right"
+        ng-click="goToPkgInstances()">
+        查看实例
+      </button>
+      <button type="button" class="btn btn-default"
+        id="btn-task-copy-all"
+        clip-copy="getIpsToCopy()"
+        clip-click="copied('#btn-task-copy-all')">
+        复制全部IP
+      </button>
+      <button type="button" class="btn btn-default"
+        id="btn-task-copy-ok"
+        clip-copy="getIpsToCopy('ok')"
+        clip-click="copied('#btn-task-copy-ok')"
+        ng-disabled="!ips.ok.length">
+        复制成功IP
+      </button>
+      <button type="button" class="btn btn-default"
+        id="btn-task-copy-failed"
+        clip-copy="getIpsToCopy('failed')"
+        clip-click="copied('#btn-task-copy-failed')"
+        ng-disabled="!ips.failed.length">
+        复制失败IP
+      </button>
+    </div>
+  </div>
+</div>

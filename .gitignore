@@ -1,0 +1,8 @@
+api/logs/
+api/**/oldFiles/
+api/**/log/
+api/**/.svn/*
+console/logs/
+console/tmp/
+console/node_modules/
+console/patch.*

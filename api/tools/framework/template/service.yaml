@@ -1,0 +1,27 @@
+# service.yaml
+# 
+# 注意缩进，每级缩进为2个空格！！
+# 更多配置项说明：http://l.isd.com/spp/index.php/Doc/yaml
+#
+global:
+  listen:
+    - address: eth1:5574/tcp	# 网卡:端口/协议，0.0.0.0对应的网卡是all；若监听多个端口，对应写多行即可
+    - address: eth1:5574/udp
+  timeout: 60	# 可选配置，连接空闲关闭超时时间，默认60秒
+service:
+  - id: 1	# worker1
+    module: ../client/<插件包名>/lib/<插件so>	# 插件So，请对应改下插件包名和So的名字
+    conf: ../client/<插件包名>/conf/<插件配置文件>	# 可选配置，So的配置文件，请对应改下插件包名和配置文件的名字
+    procnum: 5		# 进程数，约定maxprocnum == minprocnum == procnum
+    heartbeat: 60	# 可选配置，默认60秒
+    shmsize: 16		# 可选配置项，对应一组worker的共享内存队列大小，单位是MB，默认是16MB
+    log:		# 可选配置
+      level: 3		# 日志级别，0-5，值越小记录的日志越多，默认是3
+  - id: 2	# worker2
+    module: ../client/<插件包名>/lib/<插件so>	# 插件So，请对应改下插件包名和So的名字
+    conf: ../client/<插件包名>/conf/<插件配置文件>	# 可选配置，So的配置文件，请对应改下插件包名和配置文件的名字
+    procnum: 5		# 进程数，约定maxprocnum == minprocnum == procnum
+    heartbeat: 60	# 可选配置，默认60秒
+    shmsize: 16		# 可选配置项，对应一组worker的共享内存队列大小，单位是MB，默认是16MB
+    log:		# 可选配置
+      level: 3		# 日志级别，0-5，值越小记录的日志越多，默认是3

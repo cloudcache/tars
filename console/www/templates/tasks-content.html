@@ -1,0 +1,65 @@
+<div class="pkg-content">
+  <div class="filterbar">
+    <div class="btn-group btn-group-primary">
+      <button type="button" class="btn btn-default"
+        ng-repeat="row in rangeList"
+        ng-class="{active: isActiveRange(row)}"
+        ng-click="setActiveRange(row)">
+        {{row.text}}
+      </button>
+    </div>
+  </div>
+  <table class="table table-hover table-tasks">
+    <colgroup>
+      <col>
+      <col style="width:15%">
+      <col style="width:11%">
+      <col style="width:20%">
+      <col style="width:9%">
+      <col style="width:11%">
+      <col style="width:14%">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>{{pkg ? '用户' : '包名称'}}</th>
+        <th>版本</th>
+        <th>任务类型</th>
+        <th>开始时间</th>
+        <th>耗时</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-if="taskList.length===0">
+        <td class="text-center" colspan="7">无记录</td>
+      </tr>
+      <tr ng-repeat="row in taskList">
+        <td>
+          <a ui-sref="pkg.versions(row)" ng-if="!pkg">{{row.name}}</a>
+          <span ng-if="pkg">{{row.operator}}</span>
+        </td>
+        <td>{{row | taskVersion}}</td>
+        <td>{{row.op_type | operationType}}</td>
+        <td>{{row.start_time}}</td>
+        <td>{{row.used_time | costTime}}</td>
+        <td>
+          <i class="icon-status" ng-class="row.task_status"></i>
+          {{row | taskStatus}}
+        </td>
+        <td>
+          <a ui-sref="task-detail({taskId:row.task_id})">详情</a>
+          &nbsp;
+          <a href="#" ng-click="goToPkgInstances(row)">查看实例</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="pn-container left">
+  <tars-pagination ng-model="filters.page" total-items="totalItems" items-per-page="itemsPerPage" num-pages="numPages"></tars-pagination>
+  <div class="pn-helper">
+    {{filters.page}} / {{numPages}} 页， 共 {{totalItems}} 个任务
+  </div>
+</div>

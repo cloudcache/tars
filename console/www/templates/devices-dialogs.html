@@ -1,0 +1,58 @@
+<!-- 批量修改设备信息 start -->
+<div class="modal" id="modal-update-devices" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">修改设备信息</h4>
+      </div>
+      <div class="modal-body">
+        <div class="help-block">
+          说明：输入框留空，表示不更改
+        </div>
+        <form class="form-update-devices">
+          <div class="form-group">
+            <label class="label-control">
+              业务
+            </label>
+            <input type="text" class="form-control"
+              name="business"
+              ng-model="formData.business">
+          </div>
+          <div class="form-group">
+            <label class="label-control">
+              机房
+            </label>
+            <input type="text" class="form-control"
+              name="idc"
+              ng-model="formData.idc">
+          </div>
+          <div class="form-group">
+            <label class="label-control">
+              设备 IP 列表
+            </label>
+            <textarea class="form-control"
+              name="ips"
+              ng-model="formData.ips"
+              spellcheck="false"
+              readonly
+              required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default"
+          data-dismiss="modal"
+          ng-disabled="updating">
+          取消
+        </button>
+        <button type="button" class="btn btn-primary"
+          ng-click="updateConfirm()"
+          ng-disabled="updating">
+          {{updating ? '保存中...' : '保存'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 批量修改设备信息 end -->

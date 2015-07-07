@@ -1,0 +1,36 @@
+#!/usr/bin/expect  -- 
+set timeout 300 
+set passwd [lindex $argv 2]
+
+if { [llength $argv] < 4} {
+  puts "usage: $argv0 user ip pwd src dst"
+  exit 1
+}
+proc wait {} {
+    expect {
+        "$*" { }
+        ">*" { }
+        "#*" { }
+		"*assword*" {send "\n"; puts "\n" ; exit 1}
+    }
+}
+
+spawn /usr/bin/rsync -ar -e "/usr/bin/ssh -p36000 -q" [lindex $argv 0]@[lindex $argv 1]:[lindex $argv 3] [lindex $argv 4]
+expect {
+    "*assword*"  {
+         send "$passwd\n"
+         expect "*assword*" { send "isd@temp\n"; wait }
+    }
+    "*no)?*"  {
+        send "yes\n"
+        expect {
+            "*assword*" {
+                send "$passwd\n"
+                expect "*assword*" { send "isd@temp\n"; wait }
+            }
+        }
+    }
+    timeout {
+        exit 2
+    }
+}

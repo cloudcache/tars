@@ -1,0 +1,26 @@
+# EditorConfig is awesome: <a onclick="javascript:pageTracker._trackPageview('/outgoing/EditorConfig.org');" href="http://EditorConfig.org">http://EditorConfig.org</a>
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{js,html,css}]
+charset = utf-8
+
+# 4 space indentation 
+[*.php]
+indent_style = space
+indent_size = 4
+
+# Tab indentation (no size specified) test
+#[*.js]
+#indent_style = tab
+#tab_width = 50
+
+trim_trailing_whitespace = true

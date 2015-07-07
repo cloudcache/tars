@@ -1,0 +1,69 @@
+<div class="pkg-content">
+  <div class="btnbar">
+    <button type="button" class="btn btn-default btn-loose" ng-click="update()">升 级</button>
+    <button type="button" class="btn btn-default btn-loose" ng-click="maintenance('start')">启 动</button>
+    <button type="button" class="btn btn-default btn-loose" ng-click="maintenance('stop')">停 止</button>
+    <button type="button" class="btn btn-default btn-loose" ng-click="maintenance('restart')">重 启</button>
+    <button type="button" class="btn btn-default btn-loose" ng-click="rollback()">回 滚</button>
+    <button type="button" class="btn btn-default btn-loose" ng-click="maintenance('uninstall')">卸 载</button>
+  </div>
+
+  <table class="table table-hover table-instances">
+    <colgroup>
+      <col style="width:6%">
+      <col style="width:20%">
+      <col style="width:12%">
+      <col>
+      <col style="width:20%">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>
+          <input type="checkbox" ng-model="all.checked" ng-change="allChecked()">
+        </th>
+        <th>
+          <button type="button" class="btn btn-xs btn-default pull-right"
+            ng-click="filterIps()"
+            ng-class="{active: filters.ips}">
+            过滤IP
+          </button>
+          IP
+        </th>
+        <th>版本</th>
+        <th>安装路径</th>
+        <th>安装时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="row in instanceList">
+        <td>
+          <input type="checkbox" ng-model="row.checked" ng-change="rowChecked()">
+        </td>
+        <td>{{row.ip}}</td>
+        <td>v{{row.packageVersion}}</td>
+        <td>{{row.installPath}}</td>
+        <td>{{row.installTime}}</td>
+      </tr>
+      <tr class="empty-row" ng-if="!instanceList.length">
+        <td colspan="5">暂无实例</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="btnbar">
+    <button type="button" class="btn btn-default"
+      id="btn-instances-copy"
+      clip-copy="getIpsToCopy()"
+      clip-click="copied('#btn-instances-copy')"
+      ng-disabled="!checkedAtLeastOne">
+      复制选中IP
+    </button>
+  </div>
+</div>
+
+<div class="pn-container left">
+  <tars-pagination ng-model="filters.page" total-items="totalItems" items-per-page="itemsPerPage" num-pages="numPages"></tars-pagination>
+  <div class="pn-helper">
+    {{filters.page}} / {{numPages}} 页， 共 {{totalItems}} 条记录
+  </div>
+</div>

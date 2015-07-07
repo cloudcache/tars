@@ -1,0 +1,65 @@
+<div class="container narrow">
+  <h1 class="page-title">
+    设备管理
+  </h1>
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li>
+        <a ui-sref="devices">设备列表</a>
+      </li>
+      <li class="active">
+        <a ui-sref="devices-import">导入设备信息</a>
+      </li>
+      <li>
+        <a ui-sref="devices-passwords">导入设备密码</a>
+      </li>
+    </ul>
+
+    <div class="content-with-nav">
+      <form class="form-device-list" ng-submit="importDevicePassword()">
+        <div class="form-group">
+          <label class="label-control">
+            业务
+          </label>
+          <input type="text" class="form-control"
+            name="business"
+            list="datalist-business"
+            ng-model="formData.business"
+            required>
+          <datalist id="datalist-business">
+            <option ng-repeat="row in businessList" value="{{row}}">
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label class="label-control">
+            机房
+          </label>
+          <input type="text" class="form-control"
+            name="idc"
+            list="datalist-idc"
+            ng-model="formData.idc"
+            required>
+          <datalist id="datalist-idc">
+            <option ng-repeat="row in idcList" value="{{row}}">
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label class="label-control">
+            设备 IP 列表
+          </label>
+          <textarea class="form-control"
+            name="ips"
+            ng-model="formData.ips"
+            spellcheck="false"
+            required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary"
+          ng-disabled="importing">
+          {{importing ? '导入中...' : '导入设备列表'}}
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>

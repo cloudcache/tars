@@ -1,0 +1,27 @@
+<div class="container narrow">
+  <h1 class="page-title">
+    搜索结果
+    <small>共搜索到 {{totalItems}} 条记录</small>
+  </h1>
+  <div class="pkg-content">
+    <ul class="pkg-list">
+      <li ng-repeat="row in resultList">
+        <div class="pkg-row">
+          <a ui-sref="pkg.versions(row)">{{row.product}} / {{row.name}}</a>
+          <div class="pkg-author">{{row.author}} 于 {{row.submitTime}} 创建</div>
+        </div>
+      </li>
+      <li ng-if="!resultList.length">
+        <div class="pkg-row text-center">
+          没有搜索到任何结果
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="pn-container left">
+    <tars-pagination ng-model="filters.page" total-items="totalItems" items-per-page="itemsPerPage" num-pages="numPages"></tars-pagination>
+    <div class="pn-helper">
+      {{filters.page}} / {{numPages}} 页
+    </div>
+  </div>
+</div>

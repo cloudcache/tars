@@ -1,0 +1,106 @@
+<div class="container narrow">
+  <h1 class="page-title">
+    设备管理
+  </h1>
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a ui-sref="devices">设备列表</a>
+      </li>
+      <li>
+        <a ui-sref="devices-import">导入设备信息</a>
+      </li>
+      <li>
+        <a ui-sref="devices-passwords">导入设备密码</a>
+      </li>
+    </ul>
+
+    <div class="content-with-nav">
+      <div class="content-btnbar clearfix form-inline form-filter-devices">
+        <div class="pull-left">
+          <select class="form-control"
+            ng-model="filters.business"
+            ng-options="row for row in businessList"
+            ng-change="filtersChanged()">
+            <option value="">-- 选择业务 --</option>
+          </select>
+          &nbsp;
+          <select class="form-control"
+            ng-model="filters.idc"
+            ng-options="row for row in idcList"
+            ng-change="filtersChanged()">
+            <option value="">-- 选择机房 --</option>
+          </select>
+          &nbsp;
+          <input class="form-control"
+            ng-model="filters.ipText"
+            ng-change="filtersChanged()"
+            placeholder="输入一个或多个IP过滤">
+        </div>
+        <div class="pull-right">
+          <button type="button" class="btn btn-default"
+            id="btn-devices-copy"
+            clip-copy="getIpsToCopy()"
+            clip-click="copied('#btn-devices-copy')"
+            ng-disabled="!checkedAtLeastOne">
+            复制选中IP
+          </button>
+          <button type="button" class="btn btn-default"
+            ng-click="editChecked()">
+            修改选中
+          </button>
+          <button type="button" class="btn btn-danger"
+            ng-click="removeChecked()">
+            删除选中
+          </button>
+        </div>
+      </div>
+
+      <table class="table table-hover table-devices">
+        <colgroup>
+          <col style="width:10%">
+          <col span="3">
+          <col style="width:20%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" ng-model="all.checked" ng-change="allChecked()">
+            </th>
+            <th>IP</th>
+            <th>业务</th>
+            <th>机房</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in filteredDeviceList">
+            <td>
+              <input type="checkbox" ng-model="row.checked" ng-change="rowChecked()">
+            </td>
+            <td>{{row.deviceId}}</td>
+            <td>{{row.business}}</td>
+            <td>{{row.idc}}</td>
+            <td>
+              <button type="button" class="btn btn-xs btn-default" ng-click="edit(row, $index)">修改</button>
+              <button type="button" class="btn btn-xs btn-danger" ng-click="remove(row, $index)">删除</button>
+            </td>
+          </tr>
+          <tr class="empty-row" ng-if="!filteredDeviceList.length">
+            <td colspan="5">无设备</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pn-container">
+      <tars-pagination ng-model="filters.page" total-items="totalItems" items-per-page="itemsPerPage" num-pages="numPages"></tars-pagination>
+      <div class="pn-helper">
+        共 {{totalItems}} 台设备， {{filters.page}} / {{numPages}} 页
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ui-view="dialogs"></div>

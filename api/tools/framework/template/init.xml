@@ -1,0 +1,164 @@
+framework_ver=2.0.7
+<!--程序包基本信息-->
+<base_info>
+#程序作者（多人请用空格间隔）
+author=""
+#所属产品
+product=""
+#模块
+module=""
+#软件包名称
+name=""
+#进程名列表,进程名不能超过15字符,多个进程使用空格间隔，可指定进程数量（进程名:min,max）,如app_name:1,20
+app_name=""
+#进程监听端口（多个端口使用空格间隔,仅限TCP端口）
+port=""
+#端口绑定ip类型（0：内网，1：外网，2：0.0.0.0，3：VIP）
+ip_type="0"
+#udp端口,当前只是记录,没有实际作用
+udp_port=""
+#软件包版本
+version="1.0"
+#所属用户
+user="user_00"
+#停止进程信号量
+kill_sig="KILL"
+#是否开机启动[0|1]
+auto_start="1"
+#开机启动脚本存放文件
+boot_path="/usr/local/tars/etc/svc.sh"
+#日志目录(日志直接存放在安装目录请设为空)
+log_dir="/data/log/$name-$version"
+#告警特性ID(默认不需要修改)
+rpt_port="5570"
+#基础安装目录(请勿修改)
+install_base="/usr/local/tars"
+#安装目录
+install_path=""
+#是否强制在老目录安装(请勿修改)
+force_install="false"
+</base_info>
+
+<!--安装时创建文件链接-->
+<link>
+#cd $install_path
+#ln -s conf etc
+</link>
+
+<!--程序启动方式，请使用相对bin目录的路径-->
+<start>
+#限制core文件大小为4k,用于进程coredump监控
+ulimit -c 4 -S
+
+#-----单进程名程序包请在这添加启动命令-----
+
+
+#-----多进程名程序包请在这添加启动命令-----
+#每个进程复制一份if语句，注意保留if判断逻辑并修改内部的示例进程名app_test
+#变量app_to_start为需要启动的进程名,不需要修改
+#if [ "$app_to_start" = "app_test" -o "$app_to_start" = "all" ];then
+#    ./app_test &
+#fi
+
+</start>
+
+<!--自定义crontab调度,请使用#INSTALL_PATH占位符-->
+<!--Example: "0 0 * * * #INSTALL_PATH/admin/start.sh &" -->
+<crontab>
+*/3 * * * * #INSTALL_PATH/admin/monitor.sh > #INSTALL_PATH/log/crontab.log 2>&1 &
+*/15 * * * * #INSTALL_PATH/admin/clear.sh file > #INSTALL_PATH/log/crontab.log 2>&1 &
+#15 8 * * * #INSTALL_PATH/admin/md5sum.sh check > #INSTALL_PATH/log/crontab.log 2>&1 &
+</crontab>
+
+<!--程序停止方式-->
+<stop>
+#停止进程后等待时间（秒）
+sleep_count=1
+
+#变量app_to_stop为需要启动的进程名
+
+if [ $app_count -gt 1 -a "$app_to_stop" != "all" ];then
+    kill_app $app_to_stop $kill_sig
+    sleep $sleep_count
+    return
+fi
+
+for app_info in $app_name
+do
+    app=`echo $app_info | awk -F: '{print $1}'`
+    kill_app $app $kill_sig
+    sleep $sleep_count
+done
+</stop>
+
+<!--程序状态检测，若检测异常则添加异常进程名到err_app或添加异常端口到err_port-->
+<monitor>
+#进程数量检测
+for app_info in `cat $runing_file`
+do
+    check_process "$app_info"
+done
+
+#端口检测
+for p in `echo $port`
+do
+    check_port "$bind_ip" "$p"
+done
+</monitor>
+
+<!--程序异常处理，根据状态检测是否正常决定-->
+<resolve>
+#if [ "$err_port" != "" ];then
+#    $install_path/admin/restart.sh all
+#    return
+#fi
+
+for app in `echo $err_app`
+do
+    $install_path/admin/restart.sh $app
+done
+</resolve>
+
+<!--需要进行md5校验的文件列表，请使用相对安装目录的路径，带"<空格>-"后缀为不需要进行校验-->
+<md5>
+bin/*
+lib/*
+admin/*
+bin/*.pid -
+bin/*core* -
+bin/*.tmp -
+bin/*.stat -
+bin/*.log -
+bin/*.data -
+bin/*.dat -
+bin/*.bin -
+bin/*.info -
+</md5>
+
+<!--需要进行安装时替换内容的文件列表,请使用相对安装目录的路径-->
+<substitute>
+init.xml
+conf/*
+etc/*
+</substitute>
+
+<!--数据清理配置-->
+<clear_file>
+#目录              #阀值        #命令  #参数 #目标
+log                85%:2000M    tar    10    *.log
+admin/data/backup  90%:50M      tar    10    *
+admin/data/tmp     90%:2M      delete 1     *
+
+#----说明-----
+#目录：需要监控的目录，使用相对安装目录路径
+#阀值：触发清理操作的条件[分区使用百分比:目录最大空间<M|m>]
+#命令：delete(删除指定时间前文件)，tar(压缩指定时间前文件)，clear(清空超过指定大小文件)
+#参数：delete,tar(默认天数,后缀h为小时，m为分钟)，clear(文件大小k)
+#目标：可以清理的文件,接受通配符
+
+#----示例-----
+#目录     #阀值    #命令   #参数  #目标
+#log      80%:10M  delete  30     stat*.log
+#data     90%:10M  tar     30     */*.dat
+#log      90%:10M  clear   50000  debug/err*.log
+</clear_file>

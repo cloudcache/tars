@@ -1,0 +1,106 @@
+<div class="container narrow">
+  <h1 class="pkg-info">
+    <i class="pkg-info-icon"></i>
+    <span class="pkg-info-text">
+      <span class="product">
+        <a ui-sref="product({product:product})">{{product}}</a>
+      </span>
+    </span>
+  </h1>
+  <div class="pkg-container">
+    <div class="pkg-content">
+      <div class="btnbar">
+        <a class="btn btn-primary" ui-sref="new({product:product})">创建新包</a>
+        <div class="content-search with-search-icon">
+          <input type="search" class="form-control pull-left" placeholder="查找该业务下的包"
+            ng-model="filters.name"
+            ng-change="nameChange()">
+        </div>
+      </div>
+
+      <ul class="nav nav-toolbar">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {{filters.author || '创建者'}}
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu filter-author">
+            <li ng-repeat="authorName in authorList">
+              <a href="#" ng-click="setAuthor(authorName)">{{authorName}}</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="#" ng-click="setAuthor()">所有人</a>
+            </li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            名称从{{filters.order==='desc' ? '前到后' : '后到前'}}
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu fixwidth" role="menu">
+            <li><a href="#" ng-click="setOrder('desc')">名称从前到后</a></li>
+            <li><a href="#" ng-click="setOrder('asc')">名称从后到前</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="pkg-list">
+        <li ng-repeat="row in pkgList">
+          <div class="pkg-row">
+            <a ui-sref="pkg.versions(row)">{{row.name}}</a>
+            <div class="pkg-author">{{row.author}} 于 {{row.submitTime}} 创建</div>
+          </div>
+        </li>
+        <li ng-if="!pkgList.length">
+          <div class="pkg-row">暂无记录</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="pn-container left">
+      <tars-pagination ng-model="filters.page" total-items="totalItems" items-per-page="itemsPerPage" num-pages="numPages"></tars-pagination>
+      <div class="pn-helper">
+        {{filters.page}} / {{numPages}} 页， 共 {{totalItems}} 个包
+      </div>
+    </div>
+    <!-- <div class="pkg-pager">
+      <span class="pager-header">
+        {{filters.page}} / {{pageCount}} 页
+      </span>
+      <ul class="pagination">
+        <li class="disabled" ng-if="disabledPrev()">
+          <span><i class="glyphicon glyphicon-step-backward"></i></span>
+        </li>
+        <li ng-if="!disabledPrev()">
+          <a href="#" ng-click="pageTo(1)"><i class="glyphicon glyphicon-step-backward"></i></a>
+        </li>
+
+        <li class="disabled" ng-if="disabledPrev()">
+          <span><i class="glyphicon glyphicon-menu-left"></i></span>
+        </li>
+        <li ng-if="!disabledPrev()">
+          <a href="#" ng-click="pageTo(filters.page-1)"><i class="glyphicon glyphicon-menu-left"></i></a>
+        </li>
+
+        <li class="disabled" ng-if="disabledNext()">
+          <span><i class="glyphicon glyphicon-menu-right"></i></span>
+        </li>
+        <li ng-if="!disabledNext()">
+          <a href="#" ng-click="pageTo(filters.page+1)"><i class="glyphicon glyphicon-menu-right"></i></a>
+        </li>
+
+        <li class="disabled" ng-if="disabledNext()">
+          <span><i class="glyphicon glyphicon-step-forward"></i></span>
+        </li>
+        <li ng-if="!disabledNext()">
+          <a href="#" ng-click="pageTo(pageCount)"><i class="glyphicon glyphicon-step-forward"></i></a>
+        </li>
+      </ul>
+      <span class="pager-footer">
+        共 {{pkgCount}} 个包
+      </span>
+    </div> -->
+  </div>
+</div>

@@ -1,0 +1,4 @@
+logs/
+tmp/
+node_modules/
+patch.*
