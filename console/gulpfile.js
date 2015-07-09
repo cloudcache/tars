@@ -7,16 +7,21 @@ var gulp = require('gulp'),
     rev = require('gulp-rev');
 
 gulp.task('sass', function(){
-    gulp.src('www/assets/scss/*.scss')
-        .pipe(sass({errLogToConsole: true}))
-        .pipe(gulp.dest('www/assets/css'));
+  gulp.src('www/assets/scss/*.scss')
+  .pipe(sass({errLogToConsole: true}))
+  .pipe(gulp.dest('www/assets/css'));
 });
 
 gulp.task('watch', function(){
-    gulp.watch('www/assets/scss/*.scss', ['sass']);
+  gulp.watch('www/assets/scss/*.scss', ['sass']);
 });
 
-gulp.task('build', function(){
+gulp.task('fonts', function(){
+  return gulp.src('www/assets/lib/bootstrap/fonts/*')
+  .pipe(gulp.dest('www/assets/fonts'));
+});
+
+gulp.task('build', ['fonts'], function(){
   gulp.src('src/views/layout.php')
   .pipe(rename({basename: 'layout-dist'}))
   .pipe(usemin({

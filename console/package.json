@@ -2,7 +2,7 @@
   "name": "tars-console",
   "description": "Tars web console",
   "version": "1.0.0-beta",
-  "homepage": "http://tars.qq.com/",
+  "homepage": "http://tars.tencent-cloud.com/",
   "devDependencies": {
     "gulp": "~3.8.7",
     "gulp-minify-css": "^1.1.1",

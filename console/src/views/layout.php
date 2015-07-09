@@ -139,7 +139,7 @@ var _userrole = <?php echo json_encode(Flight::get('userrole')); ?>;
 <div ui-view></div>
 
 <div class="footer">
-  Powered by <a href="http://tars.qq.com/" target="_blank">TARS</a> under <a href="/LICENSE" target="_blank">BSD</a>.
+  Powered by <a href="http://tars.tencent-cloud.com/" target="_blank">TARS</a> under <a href="/LICENSE" target="_blank">BSD</a>.
 </div>
 
 <!-- 警告框 start -->
