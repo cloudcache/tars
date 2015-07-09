@@ -1049,7 +1049,12 @@ a:hover {
   $background-color: #171f2a;
 
   background: $background-color url(../images/index-bg.jpg) no-repeat center top;
-  background-size: auto 100%;
+  // background-size: auto 100%;
+  -webkit-background-size: cover;
+     -moz-background-size: cover;
+       -o-background-size: cover;
+          background-size: cover;
+  background-position: top;
 
   .footer {
     color: $color;

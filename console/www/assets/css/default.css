@@ -672,7 +672,11 @@ a, a:focus, a:hover {
 /* 首页 */
 .index {
   background: #171f2a url(../images/index-bg.jpg) no-repeat center top;
-  background-size: auto 100%; }
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position: top; }
   .index .footer {
     color: #929396;
     background-color: #171f2a; }

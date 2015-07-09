@@ -14,7 +14,7 @@
 
 <link rel="stylesheet" href="/assets/css/style-97dfd20ccd.css"/>
 
-<link rel="stylesheet" href="/assets/css/main-26421d87aa.css"/>
+<link rel="stylesheet" href="/assets/css/main-d871ce6be7.css"/>
 
 <script src="/assets/js/vendor-65c6988e47.js"></script>
 
