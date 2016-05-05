@@ -1,4 +1,4 @@
-``[官方项目](https://github.com/tencent-tars/tars)，已经暂时暂停，有兴趣的可以关注``
+PS: [官方项目](https://github.com/tencent-tars/tars)，已经暂时暂停，有兴趣的可以[关注](http://tars.tencent-cloud.com/ )
 
 # TARS 包发布系统
 
