@@ -416,7 +416,9 @@ class PackFunction
                     $errorArray['error'] = '缺少mode参数';
                     Flight::json($errorArray, 404);
                 }
-                eval("\$pope = 0$mode;");
+                //这里eval有问题, $mode比较危险, 用户可以自己随便填，另外，这里没必要用eval
+                //eval("\$pope = 0$mode;");
+                $pope = '0' . $mode;
                 chmod($realFilePath, $pope);
                 break;
 
