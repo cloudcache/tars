@@ -1,3 +1,5 @@
+PS: [官方项目](https://github.com/tencent-tars/tars)，已经暂时暂停，有兴趣的可以[关注](http://tars.tencent-cloud.com/ )
+
 # TARS 包发布系统
 
 TARS 包发布系统，是一套提供高效的软件包的管理、部署和运维的平台。标准化的软件包结构，可视化打包，完善的权限、版本控制管理，并提供可靠的进程监控与自恢复能力。
@@ -8,9 +10,9 @@ TARS 包发布系统，是一套提供高效的软件包的管理、部署和运
 2. 修改配置文件 `./console/tars.ini` 。配置基本信息、后台服务API地址等。
 3. 调整 `./console/www/assets/js/app.js` 中的一些前台配置项。
 
-[Web 控制台说明](https://github.com/tencent-tars/tars/tree/master/console)
+[Web 控制台说明](./console)
 
-[后台服务和接口说明](https://github.com/tencent-tars/tars/tree/master/api)
+[后台服务和接口说明](./api)
 
 ## 目录结构
 
@@ -41,6 +43,6 @@ gulp                 # 启动 gulp 任务，自动监听 scss 文件变更，生
 
 ## 版权许可
 
-[BSD](https://github.com/tencent-tars/tars/blob/master/LICENSE)
+[BSD](./LICENSE)
 
 Copyright (c) 2015, TENCENT, INC.
